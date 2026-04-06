@@ -5,6 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Axios Scanner — Check if you were hacked</title>
     <meta name="description" content="Free one-click scanner for the axios npm supply chain attack (March 31, 2026). No install required.">
+    <script>
+    // Auto-detect Middle East visitors and redirect to Arabic page.
+    // Checks: 1) explicit override via ?lang=en  2) stored preference  3) browser language  4) timezone
+    (function() {
+        if (new URLSearchParams(location.search).get('lang') === 'en') {
+            localStorage.setItem('axios-scanner-lang', 'en');
+            return;
+        }
+        var pref = localStorage.getItem('axios-scanner-lang');
+        if (pref === 'en') return;
+        if (pref === 'ar') { location.replace('index-ar.html'); return; }
+
+        var lang = (navigator.language || '').toLowerCase();
+        var isArabicBrowser = lang.startsWith('ar');
+
+        var tz = '';
+        try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch(e) {}
+        var meTz = /cairo|riyadh|dubai|baghdad|amman|beirut|damascus|kuwait|doha|muscat|bahrain|gaza|hebron|jeddah|aden|sanaa|tripoli|khartoum|algiers|tunis|casablanca/i;
+        var isMeTimezone = meTz.test(tz);
+
+        if (isArabicBrowser || isMeTimezone) {
+            location.replace('index-ar.html');
+        }
+    })();
+    </script>
     <style>
         :root {
             --bg: #0d1117;
@@ -301,6 +326,88 @@
         footer a { color: var(--accent); text-decoration: none; }
         footer a:hover { text-decoration: underline; }
 
+        /* Terminal preview */
+        .terminal-preview {
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            background: #0d1117;
+        }
+
+        .terminal-bar {
+            background: #1c2128;
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .terminal-title {
+            color: var(--text-dim);
+            font-size: 0.8rem;
+            margin-left: 8px;
+        }
+
+        .terminal-body {
+            padding: 20px;
+            font-family: var(--mono);
+            font-size: 0.78rem;
+            line-height: 1.7;
+            white-space: pre;
+            overflow-x: auto;
+        }
+
+        .t-cyan { color: #58a6ff; }
+        .t-green { color: #3fb950; }
+        .t-yellow { color: #d29922; }
+        .t-red { color: #f85149; }
+        .t-white { color: #e6edf3; }
+        .t-dim { color: #484f58; }
+
+        .progress-bar {
+            display: inline-block;
+            width: 200px;
+            height: 14px;
+            background: #21262d;
+            border-radius: 7px;
+            overflow: hidden;
+            vertical-align: middle;
+            position: relative;
+        }
+
+        .progress-fill {
+            display: block;
+            height: 100%;
+            width: var(--progress);
+            background: linear-gradient(90deg, #1f6feb, #58a6ff);
+            border-radius: 7px;
+            animation: progress-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes progress-pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .anim-spin {
+            display: inline-block;
+            animation: spin-char 1s steps(4) infinite;
+        }
+
+        @keyframes spin-char {
+            0% { content: "▖"; }
+            25% { content: "▘"; }
+            50% { content: "▝"; }
+            75% { content: "▗"; }
+        }
+
         /* Responsive */
         @media (max-width: 600px) {
             .hero { padding: 48px 0 32px; }
@@ -381,6 +488,38 @@
             <div class="chain-step">
                 <div class="chain-num">5</div>
                 <div><strong>Attacker has full access</strong><p>Shell commands, file theft, credential exfiltration. The virus then self-destructs to hide evidence.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- What you'll see -->
+    <section>
+        <h2>What you'll see when it runs</h2>
+        <p style="color:var(--text-dim);margin-bottom:20px;">The scanner shows live progress the entire time. You'll always know it's working and how far along it is.</p>
+        <div class="terminal-preview">
+            <div class="terminal-bar">
+                <span class="terminal-dot" style="background:#f85149"></span>
+                <span class="terminal-dot" style="background:#d29922"></span>
+                <span class="terminal-dot" style="background:#3fb950"></span>
+                <span class="terminal-title">PowerShell</span>
+            </div>
+            <div class="terminal-body">
+<span class="t-yellow">  ............................................................</span>
+<span class="t-yellow">  :                                                          :</span>
+<span class="t-yellow">  :  </span><span class="t-white">HEADS UP:</span><span class="t-yellow"> The full scan usually takes </span><span class="t-white">1 - 5 minutes</span><span class="t-yellow">.  :</span>
+<span class="t-yellow">  :  It needs to look through many files on your computer.   :</span>
+<span class="t-yellow">  :                                                          :</span>
+<span class="t-yellow">  :  </span><span class="t-white">The screen will keep updating</span><span class="t-yellow"> so you always know     :</span>
+<span class="t-yellow">  :  it's working. </span><span class="t-white">Just sit back and wait for the results.</span><span class="t-yellow">  :</span>
+<span class="t-yellow">  :............................................................:</span>
+
+<span class="t-cyan">  <span class="progress-bar"><span class="progress-fill" style="--progress:33%"></span></span></span> <span class="t-white">33%</span>
+<span class="t-dim">  Step 2 of 6: </span><span class="t-white">Looking for the malicious dropper package</span>
+
+<span class="t-dim">  [ </span><span class="t-cyan anim-spin">&#9654;</span><span class="t-dim"> ] Searching your files for axios  (1,250 files checked, 14s elapsed)</span>
+
+<span class="t-dim">  [</span><span class="t-green"> OK </span><span class="t-dim">]</span><span class="t-white"> Done! Checked 3,847 files, found 2 match(es). </span><span class="t-dim">(23.1s)</span>
+<span class="t-dim">  [</span><span class="t-green"> OK </span><span class="t-dim">]</span><span class="t-green"> Safe: axios 1.7.7 at C:\Users\you\project\node_modules\axios</span>
             </div>
         </div>
     </section>

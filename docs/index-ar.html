@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Axios Scanner — افحص لو جهازك اتهكر</title>
     <meta name="description" content="أداة فحص مجانية بضغطة واحدة لهجوم axios npm supply chain (31 مارس 2026). مش محتاج تنصيب أي حاجة.">
+    <script>localStorage.setItem('axios-scanner-lang', 'ar');</script>
     <style>
         :root {
             --bg: #0d1117;
@@ -328,6 +329,90 @@
         footer a { color: var(--accent); text-decoration: none; }
         footer a:hover { text-decoration: underline; }
 
+        /* Terminal preview */
+        .terminal-preview {
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            background: #0d1117;
+            direction: ltr;
+            text-align: left;
+        }
+
+        .terminal-bar {
+            background: #1c2128;
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .terminal-title {
+            color: var(--text-dim);
+            font-size: 0.8rem;
+            margin-left: 8px;
+        }
+
+        .terminal-body {
+            padding: 20px;
+            font-family: var(--mono);
+            font-size: 0.78rem;
+            line-height: 1.7;
+            white-space: pre;
+            overflow-x: auto;
+        }
+
+        .t-cyan { color: #58a6ff; }
+        .t-green { color: #3fb950; }
+        .t-yellow { color: #d29922; }
+        .t-red { color: #f85149; }
+        .t-white { color: #e6edf3; }
+        .t-dim { color: #484f58; }
+
+        .progress-bar {
+            display: inline-block;
+            width: 200px;
+            height: 14px;
+            background: #21262d;
+            border-radius: 7px;
+            overflow: hidden;
+            vertical-align: middle;
+            position: relative;
+        }
+
+        .progress-fill {
+            display: block;
+            height: 100%;
+            width: var(--progress);
+            background: linear-gradient(90deg, #1f6feb, #58a6ff);
+            border-radius: 7px;
+            animation: progress-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes progress-pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .anim-spin {
+            display: inline-block;
+            animation: spin-char 1s steps(4) infinite;
+        }
+
+        @keyframes spin-char {
+            0% { content: "▖"; }
+            25% { content: "▘"; }
+            50% { content: "▝"; }
+            75% { content: "▗"; }
+        }
+
         /* Responsive */
         @media (max-width: 600px) {
             .hero { padding: 48px 0 32px; }
@@ -343,7 +428,7 @@
 
     <!-- Language switch -->
     <div class="lang-switch">
-        <a href="index.html">English</a>
+        <a href="index.html?lang=en">English</a>
     </div>
 
     <!-- Hero -->
@@ -408,6 +493,38 @@
             <div class="chain-step">
                 <div class="chain-num">5</div>
                 <div><strong>الهاكر بقى عنده صلاحيات كاملة</strong><p>يشغّل أوامر، يسرق ملفات، يسحب credentials. وبعدين الفايروس بيمسح نفسه عشان يغطي أثره.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- What you'll see -->
+    <section>
+        <h2>هتشوف ايه وهي شغّالة</h2>
+        <p style="color:var(--text-dim);margin-bottom:20px;">الأداة بتعرض تقدّم مباشر طول الوقت. هتعرف دايماً إنها شغّالة ووصلت لفين.</p>
+        <div class="terminal-preview">
+            <div class="terminal-bar">
+                <span class="terminal-dot" style="background:#f85149"></span>
+                <span class="terminal-dot" style="background:#d29922"></span>
+                <span class="terminal-dot" style="background:#3fb950"></span>
+                <span class="terminal-title">PowerShell</span>
+            </div>
+            <div class="terminal-body">
+<span class="t-yellow">  ............................................................</span>
+<span class="t-yellow">  :                                                          :</span>
+<span class="t-yellow">  :  </span><span class="t-white">HEADS UP:</span><span class="t-yellow"> The full scan usually takes </span><span class="t-white">1 - 5 minutes</span><span class="t-yellow">.  :</span>
+<span class="t-yellow">  :  It needs to look through many files on your computer.   :</span>
+<span class="t-yellow">  :                                                          :</span>
+<span class="t-yellow">  :  </span><span class="t-white">The screen will keep updating</span><span class="t-yellow"> so you always know     :</span>
+<span class="t-yellow">  :  it's working. </span><span class="t-white">Just sit back and wait for the results.</span><span class="t-yellow">  :</span>
+<span class="t-yellow">  :............................................................:</span>
+
+<span class="t-cyan">  <span class="progress-bar"><span class="progress-fill" style="--progress:33%"></span></span></span> <span class="t-white">33%</span>
+<span class="t-dim">  Step 2 of 6: </span><span class="t-white">Looking for the malicious dropper package</span>
+
+<span class="t-dim">  [ </span><span class="t-cyan anim-spin">&#9654;</span><span class="t-dim"> ] Searching your files for axios  (1,250 files checked, 14s elapsed)</span>
+
+<span class="t-dim">  [</span><span class="t-green"> OK </span><span class="t-dim">]</span><span class="t-white"> Done! Checked 3,847 files, found 2 match(es). </span><span class="t-dim">(23.1s)</span>
+<span class="t-dim">  [</span><span class="t-green"> OK </span><span class="t-dim">]</span><span class="t-green"> Safe: axios 1.7.7 at C:\Users\you\project\node_modules\axios</span>
             </div>
         </div>
     </section>
