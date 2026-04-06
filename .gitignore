@@ -1,0 +1,7 @@
+# Scan output files
+axios-scan-log_*.txt
+axios-scan-report_*.txt
+
+# Personal files (not for sharing)
+INCIDENT_REPORT.md
+LINKEDIN_POST.md
