@@ -4,7 +4,7 @@
 
 **Detect if your system was compromised by the axios npm supply chain attack (March 31, 2026)**
 
-[![Platform - Windows](https://img.shields.io/badge/Platform-Windows-0078D4?logo=windows&logoColor=white)](#quick-start--windows)
+[![Platform - Windows 10+](https://img.shields.io/badge/Platform-Windows%2010+-0078D4?logo=windows&logoColor=white)](#quick-start--windows)
 [![Platform - Linux](https://img.shields.io/badge/Platform-Linux-FCC624?logo=linux&logoColor=black)](#quick-start--linuxmacos)
 [![Platform - macOS](https://img.shields.io/badge/Platform-macOS-000000?logo=apple&logoColor=white)](#quick-start--linuxmacos)
 [![No Dependencies](https://img.shields.io/badge/Dependencies-None-brightgreen)](#faq)
@@ -64,22 +64,36 @@ flowchart LR
 ### Windows
 
 > [!TIP]
-> **No Node.js, npm, or developer tools required.** This works on any Windows computer with PowerShell (pre-installed since Windows 7).
+> **No Node.js, npm, or developer tools required.** This works on any Windows 10/11 computer. PowerShell is pre-installed.
 
-**Option 1: Double-click** (easiest)
+**Option 1: One command** (fastest)
+
+Open PowerShell and paste this:
+
+```powershell
+irm https://raw.githubusercontent.com/SufficientDaikon/axios-scanner/main/get.ps1 | iex
+```
+
+**Option 2: Double-click**
 
 1. [Download this repo](../../archive/refs/heads/main.zip) and unzip it
 2. Double-click **`SCAN.bat`**
 3. Wait for the scan to finish
 4. The report opens automatically in Notepad
 
-**Option 2: Terminal**
+**Option 3: Run locally**
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File axios-scanner.ps1
 ```
 
 ### Linux/macOS
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/SufficientDaikon/axios-scanner/main/axios-scanner.sh | bash
+```
+
+Or download and run:
 
 ```bash
 chmod +x axios-scanner.sh
@@ -90,7 +104,7 @@ chmod +x axios-scanner.sh
 
 ## What It Checks
 
-The scanner runs **6 phases** and logs every step in real-time:
+The scanner runs **6 phases on Windows** (5 on Linux/macOS) and logs every step in real-time:
 
 ```
   PHASE 1 of 6: Looking for axios installations on your computer...
@@ -115,14 +129,14 @@ The scanner runs **6 phases** and logs every step in real-time:
 <details>
 <summary><b>Detailed check list</b></summary>
 
-| # | Phase | What it checks | Why |
-|:-:|-------|---------------|-----|
-| 1 | **Axios Versions** | Every copy of axios in your user folder, global npm, and npm cache | Finds the compromised versions `1.14.1` / `0.30.4` |
-| 2 | **Dropper Package** | Searches for `plain-crypto-js` anywhere on disk, plus `setup.js` files inside axios directories | This is the package the attacker used to deliver the virus |
-| 3 | **RAT Artifacts** | Checks for `wt.exe` (ProgramData), `6202033.vbs` (Temp), `6202033.ps1` (Temp) | These are the backdoor files the virus drops on your system |
-| 4 | **Network IOCs** | DNS cache, active connections, and hosts file for `sfrclak.com` / `142.11.206.73` | Checks if your computer ever contacted the attacker's server |
-| 5 | **Persistence** | Scheduled tasks, registry Run keys, startup folder | Checks if the attacker set the virus to survive reboots |
-| 6 | **Lockfiles** | All `package-lock.json`, `yarn.lock`, `pnpm-lock.yaml` files | Checks if any project references the compromised versions |
+| # | Phase | What it checks | Platform |
+|:-:|-------|---------------|:--------:|
+| 1 | **Axios Versions** | Every copy of axios in your user folder, global npm, and npm cache | All |
+| 2 | **Dropper Package** | Searches for `plain-crypto-js` anywhere on disk, plus `setup.js` files inside axios directories | All |
+| 3 | **RAT Artifacts** | Checks for backdoor files dropped by the virus (`wt.exe`, `6202033.vbs`, `6202033.ps1` on Windows; `/tmp/6202033.*` on Linux/macOS) | All |
+| 4 | **Network IOCs** | DNS cache (Windows only), active connections, and hosts file for `sfrclak.com` / `142.11.206.73` | All |
+| 5 | **Persistence** | Scheduled tasks, registry Run keys, startup folder (Windows); LaunchAgents (macOS); crontab (Linux) | All |
+| 6 | **Lockfiles** | All `package-lock.json`, `yarn.lock`, `pnpm-lock.yaml` files | All |
 
 </details>
 
@@ -209,13 +223,13 @@ If you have [Claude Code](https://docs.anthropic.com/en/docs/claude-code), you c
 <details>
 <summary><b>Do I need Node.js or npm installed to run this?</b></summary>
 
-**No.** The scanner uses only PowerShell (Windows) or bash (Linux/macOS). It searches for files on disk using built-in OS tools. If you don't have Node.js, it will skip the npm-specific checks and tell you it's fine.
+**No.** The scanner uses only PowerShell (Windows 10+) or bash (Linux/macOS). It searches for files on disk using built-in OS tools. If you don't have Node.js, it will skip the npm-specific checks and tell you it's fine.
 </details>
 
 <details>
 <summary><b>Is this scanner safe to run?</b></summary>
 
-Yes. It only **reads** files and checks system state. It does not modify, delete, or send anything unless you explicitly use the `-Fix` / `--fix` flag. You can read the full source code — it's ~350 lines of commented PowerShell.
+Yes. It only **reads** files and checks system state. It does not modify, delete, or send anything unless you explicitly use the `-Fix` / `--fix` flag. You can read the full source code -- it's about 650 lines of commented PowerShell.
 </details>
 
 <details>

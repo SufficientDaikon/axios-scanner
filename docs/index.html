@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Axios Scanner — Check if you were hacked</title>
+    <meta name="description" content="Free one-click scanner for the axios npm supply chain attack (March 31, 2026). No install required.">
+    <style>
+        :root {
+            --bg: #0d1117;
+            --surface: #161b22;
+            --border: #30363d;
+            --text: #e6edf3;
+            --text-dim: #8b949e;
+            --accent: #58a6ff;
+            --green: #3fb950;
+            --red: #f85149;
+            --yellow: #d29922;
+            --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Noto Sans, Helvetica, Arial, sans-serif;
+            --mono: 'SF Mono', SFMono-Regular, ui-monospace, Menlo, Consolas, monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            padding: 80px 0 48px;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+        }
+
+        .hero h1 span { color: var(--red); }
+
+        .hero p {
+            font-size: 1.15rem;
+            color: var(--text-dim);
+            max-width: 550px;
+            margin: 0 auto 32px;
+        }
+
+        /* Command box */
+        .cmd-section {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 48px;
+        }
+
+        .cmd-section h2 {
+            font-size: 1rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 8px;
+        }
+
+        .cmd-section .label {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            margin-bottom: 8px;
+            margin-top: 20px;
+        }
+
+        .cmd-box {
+            background: #0d1117;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px 20px;
+            font-family: var(--mono);
+            font-size: 0.95rem;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            cursor: pointer;
+            transition: border-color 0.2s;
+            overflow-x: auto;
+        }
+
+        .cmd-box:hover { border-color: var(--accent); }
+
+        .cmd-box code {
+            flex: 1;
+            white-space: nowrap;
+            user-select: all;
+        }
+
+        .cmd-box .copy-btn {
+            background: none;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-dim);
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            font-family: var(--font);
+            transition: all 0.2s;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .cmd-box .copy-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .cmd-box .copy-btn.copied {
+            border-color: var(--green);
+            color: var(--green);
+        }
+
+        .or-divider {
+            text-align: center;
+            color: var(--text-dim);
+            font-size: 0.85rem;
+            margin: 16px 0;
+        }
+
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            padding: 12px 24px;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: border-color 0.2s;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .download-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+        /* Alert */
+        .alert {
+            background: rgba(248, 81, 73, 0.1);
+            border: 1px solid rgba(248, 81, 73, 0.4);
+            border-radius: 8px;
+            padding: 20px 24px;
+            margin-bottom: 48px;
+        }
+
+        .alert h3 { color: var(--red); margin-bottom: 8px; font-size: 1rem; }
+        .alert p { color: var(--text-dim); font-size: 0.95rem; }
+
+        /* Sections */
+        section { margin-bottom: 48px; }
+
+        section h2 {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        /* Attack chain */
+        .chain {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .chain-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            padding: 16px 0;
+        }
+
+        .chain-num {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--red);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .chain-step p { color: var(--text-dim); }
+        .chain-step strong { color: var(--text); }
+
+        .chain-arrow {
+            width: 32px;
+            text-align: center;
+            color: var(--border);
+            font-size: 1.2rem;
+            padding: 4px 0;
+        }
+
+        /* Check list */
+        .checks {
+            display: grid;
+            gap: 12px;
+        }
+
+        .check {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .check-icon {
+            color: var(--green);
+            font-size: 1.1rem;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .check h4 { margin-bottom: 4px; font-size: 0.95rem; }
+        .check p { color: var(--text-dim); font-size: 0.85rem; }
+
+        /* If compromised */
+        .steps { counter-reset: step; }
+
+        .step {
+            display: flex;
+            gap: 16px;
+            padding: 12px 0;
+            align-items: flex-start;
+        }
+
+        .step::before {
+            counter-increment: step;
+            content: counter(step);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--yellow);
+            color: var(--bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .step p { color: var(--text-dim); }
+        .step strong { color: var(--text); }
+
+        /* IOCs */
+        .ioc-box {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            font-family: var(--mono);
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            overflow-x: auto;
+            white-space: pre;
+            line-height: 1.8;
+        }
+
+        .ioc-box .bad { color: var(--red); }
+        .ioc-box .dim { color: #484f58; }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 48px 0;
+            color: var(--text-dim);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border);
+        }
+
+        footer a { color: var(--accent); text-decoration: none; }
+        footer a:hover { text-decoration: underline; }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .hero { padding: 48px 0 32px; }
+            .hero h1 { font-size: 1.8rem; }
+            .cmd-section { padding: 20px; }
+            .cmd-box { font-size: 0.8rem; padding: 12px 14px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- Hero -->
+    <div class="hero">
+        <h1>axios-<span>scanner</span></h1>
+        <p>Check if your computer was affected by the axios npm supply chain attack. One command. No install needed.</p>
+    </div>
+
+    <!-- Run it -->
+    <div class="cmd-section">
+        <h2>Windows</h2>
+        <p class="label">Open PowerShell and paste this:</p>
+        <div class="cmd-box" onclick="copyCmd(this, 'irm https://raw.githubusercontent.com/SufficientDaikon/axios-scanner/main/get.ps1 | iex')">
+            <code>irm https://raw.githubusercontent.com/SufficientDaikon/axios-scanner/main/get.ps1 | iex</code>
+            <button class="copy-btn">Copy</button>
+        </div>
+
+        <div class="or-divider">or</div>
+
+        <a class="download-btn" href="https://github.com/SufficientDaikon/axios-scanner/archive/refs/heads/main.zip">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M2.75 14A1.75 1.75 0 0 1 1 12.25v-2.5a.75.75 0 0 1 1.5 0v2.5c0 .138.112.25.25.25h10.5a.25.25 0 0 0 .25-.25v-2.5a.75.75 0 0 1 1.5 0v2.5A1.75 1.75 0 0 1 13.25 14Z"/><path d="M7.25 7.689V2a.75.75 0 0 1 1.5 0v5.689l1.97-1.969a.749.749 0 1 1 1.06 1.06l-3.25 3.25a.749.749 0 0 1-1.06 0L4.22 6.78a.749.749 0 1 1 1.06-1.06l1.97 1.969Z"/></svg>
+            Download ZIP &amp; double-click SCAN.bat
+        </a>
+
+        <h2 style="margin-top: 28px;">Linux / macOS</h2>
+        <div class="cmd-box" onclick="copyCmd(this, 'curl -fsSL https://raw.githubusercontent.com/SufficientDaikon/axios-scanner/main/axios-scanner.sh | bash')">
+            <code>curl -fsSL https://raw.githubusercontent.com/SufficientDaikon/axios-scanner/main/axios-scanner.sh | bash</code>
+            <button class="copy-btn">Copy</button>
+        </div>
+    </div>
+
+    <!-- Alert -->
+    <div class="alert">
+        <h3>What happened?</h3>
+        <p>On March 31, 2026, the npm account of the primary <strong style="color:var(--text)">axios</strong> maintainer (114M weekly downloads) was hijacked. Two malicious versions were published containing a Remote Access Trojan. The attack was live for ~3 hours before being reverted.</p>
+    </div>
+
+    <!-- Attack chain -->
+    <section>
+        <h2>How the attack worked</h2>
+        <div class="chain">
+            <div class="chain-step">
+                <div class="chain-num">1</div>
+                <div><strong>npm install runs normally</strong><p>Your project pulls the latest axios matching your version range (e.g. ^1.14.0)</p></div>
+            </div>
+            <div class="chain-arrow">&#8595;</div>
+            <div class="chain-step">
+                <div class="chain-num">2</div>
+                <div><strong>axios@1.14.1 is compromised</strong><p>The malicious version adds a hidden dependency: <code style="color:var(--red)">plain-crypto-js</code></p></div>
+            </div>
+            <div class="chain-arrow">&#8595;</div>
+            <div class="chain-step">
+                <div class="chain-num">3</div>
+                <div><strong>Postinstall script executes</strong><p>plain-crypto-js runs <code>setup.js</code> immediately after install &mdash; no user interaction needed</p></div>
+            </div>
+            <div class="chain-arrow">&#8595;</div>
+            <div class="chain-step">
+                <div class="chain-num">4</div>
+                <div><strong>RAT is downloaded</strong><p>The script contacts <code style="color:var(--red)">sfrclak.com:8000</code> and downloads a backdoor for your OS</p></div>
+            </div>
+            <div class="chain-arrow">&#8595;</div>
+            <div class="chain-step">
+                <div class="chain-num">5</div>
+                <div><strong>Attacker has full access</strong><p>Shell commands, file theft, credential exfiltration. The virus then self-destructs to hide evidence.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- What scanner checks -->
+    <section>
+        <h2>What the scanner checks</h2>
+        <div class="checks">
+            <div class="check">
+                <div class="check-icon">&#10003;</div>
+                <div><h4>Every axios installation</h4><p>Finds all copies of axios on your computer and checks if any are the malicious versions (1.14.1 or 0.30.4)</p></div>
+            </div>
+            <div class="check">
+                <div class="check-icon">&#10003;</div>
+                <div><h4>Dropper package</h4><p>Searches for the malicious "plain-crypto-js" package and suspicious setup.js scripts inside axios folders</p></div>
+            </div>
+            <div class="check">
+                <div class="check-icon">&#10003;</div>
+                <div><h4>Backdoor files</h4><p>Checks for files the virus drops on your system (wt.exe, 6202033.vbs, 6202033.ps1)</p></div>
+            </div>
+            <div class="check">
+                <div class="check-icon">&#10003;</div>
+                <div><h4>Network connections</h4><p>Checks if your computer ever contacted the attacker's server (sfrclak.com / 142.11.206.73)</p></div>
+            </div>
+            <div class="check">
+                <div class="check-icon">&#10003;</div>
+                <div><h4>Persistence mechanisms</h4><p>Checks scheduled tasks, startup programs, and registry for anything the attacker left behind</p></div>
+            </div>
+            <div class="check">
+                <div class="check-icon">&#10003;</div>
+                <div><h4>Project lockfiles</h4><p>Scans package-lock.json, yarn.lock, and pnpm-lock.yaml for references to compromised versions</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- If compromised -->
+    <section>
+        <h2>If the scanner says COMPROMISED</h2>
+        <div class="steps">
+            <div class="step"><div><strong>Disconnect from the internet</strong><p>Unplug ethernet or turn off Wi-Fi immediately.</p></div></div>
+            <div class="step"><div><strong>Re-run the scanner with --fix</strong><p>This will automatically remove the malicious files it found.</p></div></div>
+            <div class="step"><div><strong>Change ALL your passwords</strong><p>Email, GitHub, npm, cloud services, everything. The attacker had full shell access.</p></div></div>
+            <div class="step"><div><strong>Regenerate keys and tokens</strong><p>SSH keys, API keys, npm tokens, GitHub PATs. Revoke and recreate all of them.</p></div></div>
+            <div class="step"><div><strong>Check your git history</strong><p>Look for commits you didn't make. Audit recent CI/CD runs for unauthorized deployments.</p></div></div>
+        </div>
+    </section>
+
+    <!-- IOCs -->
+    <section>
+        <h2>Indicators of Compromise</h2>
+        <div class="ioc-box"><span class="dim"># Compromised packages</span>
+<span class="bad">axios@1.14.1</span>  SHA-1: 2553649f2322049666871cea80a5d0d6adc700ca
+<span class="bad">axios@0.30.4</span>  SHA-1: d6f3f62fd3b9f5432f5782b62d8cfd5247d5ee71
+<span class="bad">plain-crypto-js@4.2.1</span>  SHA-1: 07d889e2dadce6f3910dcbc253317d28ca61c766
+
+<span class="dim"># C2 Infrastructure</span>
+Domain:  <span class="bad">sfrclak.com</span>
+IP:      <span class="bad">142.11.206.73</span>
+Port:    8000
+Path:    /6202033
+
+<span class="dim"># RAT Artifacts (Windows)</span>
+%PROGRAMDATA%\wt.exe
+%TEMP%\6202033.vbs
+%TEMP%\6202033.ps1</div>
+    </section>
+
+</div>
+
+<footer>
+    <div class="container">
+        <p>Built by <a href="https://github.com/SufficientDaikon">Ahmed Taha</a> with <a href="https://claude.ai/claude-code">Claude Code</a></p>
+        <p style="margin-top: 8px;"><a href="https://github.com/SufficientDaikon/axios-scanner">View source on GitHub</a></p>
+    </div>
+</footer>
+
+<script>
+function copyCmd(box, text) {
+    navigator.clipboard.writeText(text).then(() => {
+        const btn = box.querySelector('.copy-btn');
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+            btn.textContent = 'Copy';
+            btn.classList.remove('copied');
+        }, 2000);
+    });
+}
+</script>
+
+</body>
+</html>
