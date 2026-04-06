@@ -12,6 +12,8 @@
 
 <br/>
 
+**[النسخة العربية (Arabic)](README-AR.md)**
+
 [What Happened](#what-happened) ·
 [Quick Start](#quick-start) ·
 [What It Checks](#what-it-checks) ·
