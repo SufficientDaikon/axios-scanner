@@ -5,31 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Axios Scanner — Check if you were hacked</title>
     <meta name="description" content="Free one-click scanner for the axios npm supply chain attack (March 31, 2026). No install required.">
-    <script>
-    // Auto-detect Middle East visitors and redirect to Arabic page.
-    // Checks: 1) explicit override via ?lang=en  2) stored preference  3) browser language  4) timezone
-    (function() {
-        if (new URLSearchParams(location.search).get('lang') === 'en') {
-            localStorage.setItem('axios-scanner-lang', 'en');
-            return;
-        }
-        var pref = localStorage.getItem('axios-scanner-lang');
-        if (pref === 'en') return;
-        if (pref === 'ar') { location.replace('index-ar.html'); return; }
-
-        var lang = (navigator.language || '').toLowerCase();
-        var isArabicBrowser = lang.startsWith('ar');
-
-        var tz = '';
-        try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch(e) {}
-        var meTz = /cairo|riyadh|dubai|baghdad|amman|beirut|damascus|kuwait|doha|muscat|bahrain|gaza|hebron|jeddah|aden|sanaa|tripoli|khartoum|algiers|tunis|casablanca/i;
-        var isMeTimezone = meTz.test(tz);
-
-        if (isArabicBrowser || isMeTimezone) {
-            location.replace('index-ar.html');
-        }
-    })();
-    </script>
     <style>
         :root {
             --bg: #0d1117;
@@ -423,7 +398,7 @@
 
     <!-- Language switch -->
     <div style="text-align:right;padding:16px 0 0">
-        <a href="index-ar.html" style="color:#58a6ff;text-decoration:none;font-size:0.85rem;border:1px solid #30363d;border-radius:6px;padding:6px 14px">العربية</a>
+        <a href="?lang=ar" style="color:#58a6ff;text-decoration:none;font-size:0.85rem;border:1px solid #30363d;border-radius:6px;padding:6px 14px">العربية</a>
     </div>
 
     <!-- Hero -->
